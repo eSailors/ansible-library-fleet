@@ -4,6 +4,8 @@ ansible-library-fleet
 # Description
 Ansible library to manage Fleet units. The module uses a local installed __fleetctl__ binary and not the rest interface!
 
+If your __fleetctl__ is not inside PATH use Ansible's environment declaration.
+
 # Requirements
 - Ansible must be installed
 - [fleetctl] must be installed on the system where Ansible is running on.
