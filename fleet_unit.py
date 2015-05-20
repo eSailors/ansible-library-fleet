@@ -119,7 +119,6 @@ def main():
             path=dict(type='str', default=None),
             driver=dict(type='str', default='etcd',
                        choices=['etcd', 'api']),
-        ),
             state=dict(type='str', default='started',
                        choices=['submitted', 'loaded', 'started', 'stopped', 'unloaded', 'destroyed']),
         ),
