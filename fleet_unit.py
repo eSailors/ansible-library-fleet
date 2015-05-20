@@ -26,7 +26,8 @@ def fleetctl(command, command_options='', global_options='', arguments=''):
 
 
 def get_fleet_units():
-    out = fleetctl(command='list-unit-files', arguments='--no-legend')
+    driver = module.params['driver']
+    out = fleetctl(command='list-unit-files', arguments='--no-legend', global_options='--driver="{driver}"'.format(driver=driver))
     return [re.sub(r'(\t+?)\1', r'\1', line).split('\t') for line in out.split('\n') if line]
 
 
@@ -76,6 +77,7 @@ def get_state_command(state):
 def ensure():
     name = module.params['name']
     path = module.params['path']
+    driver = module.params['driver']
     state = module.params['state']
 
     if path:
@@ -102,7 +104,8 @@ def ensure():
         fleet_command_options = ' '.join([item for item in unit_files_to_handle])
         # module.fail_json(msg='Command: {cmd}\nOptions: {opts}'.format(cmd=fleet_command, opts=fleet_command_options))
         fleetctl(command=fleet_command,
-                 command_options=fleet_command_options)
+                 command_options=fleet_command_options,
+                 global_options='--driver="{driver}"'.format(driver=driver))
         return True, unit_files_to_handle
 
     return False, unit_files_to_handle
@@ -114,6 +117,8 @@ def main():
         argument_spec=dict(
             name=dict(type='str', default=None),
             path=dict(type='str', default=None),
+            driver=dict(type='str', default='etcd',
+                       choices=['etcd', 'api']),
             state=dict(type='str', default='started',
                        choices=['submitted', 'loaded', 'started', 'stopped', 'unloaded', 'destroyed']),
         ),
